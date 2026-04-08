@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        /* 1. 設置深色主題，符合 Adobe 軟體風格 */
+        body { 
+            background-color: #232323; 
+            color: #E6E6E6; 
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            padding: 10px;
+            overflow-x: hidden; /* 防止橫向滾動 */
+        }
+
+        /* 2. 輸入框樣式 */
+        #userInput {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            background: #323232;
+            border: 1px solid #454545;
+            color: white;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        /* 3. 模板網格系統 (兩欄排列) */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 兩欄 */
+            gap: 10px;
+        }
+
+        /* 4. 模板卡片樣式 */
+        .card {
+            background: #2D2D2D;
+            border: 1px solid #3F3F3F;
+            border-radius: 6px;
+            padding: 5px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            text-align: center;
+        }
+
+        .card:hover {
+            border-color: #1473E6; /* Adobe 標誌藍 */
+            background: #383838;
+        }
+
+        .card:active {
+            transform: scale(0.95); /* 按下去的縮放感 */
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            background: #000; /* 預覽圖未載入時的底色 */
+        }
+
+        .card span {
+            font-size: 11px;
+            margin-top: 5px;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis; /* 文字太長自動變... */
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="userInput" placeholder="輸入綜藝台詞...">
+
+    <div class="grid" id="templateGrid">
+        </div>
+
+    <script src="./CSInterface.js"></script>
+    <script src="./data.js"></script>
+    <script>
+        const grid = document.getElementById('templateGrid');
+        
+        // 渲染模板卡片
+        varietyTemplates.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="${item.preview}" alt="${item.name}">
+                <span>${item.name}</span>
+            `;
+            
+            // 點擊事件
+            card.onclick = () => {
+                const text = document.getElementById('userInput').value || item.defaultText;
+                const cs = new CSInterface();
+                // 執行後端 JSX 腳本 (下一步會寫)
+                cs.evalScript(`createVarietyClip("${text}", "${item.mogrtFile}")`);
+            };
+            
+            grid.appendChild(card);
+        });
+    </script>
+</body>
+</html>
